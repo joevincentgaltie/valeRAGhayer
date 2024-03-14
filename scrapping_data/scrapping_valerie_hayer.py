@@ -34,8 +34,7 @@ titres = driver.find_elements(By.CLASS_NAME, 'erpl_document-header')
 contenu = driver.find_elements(By.CLASS_NAME, 'erpl_document-body > p')
 dates = driver.find_elements(By.CLASS_NAME, 'erpl_document-subtitle-fragment')
 
-data = {"Valérie Hayer": [{"source" : titres[i].text, "contenu": contenu[i].text, "source_date": dates[i].text} for i in range(len(titres))]}
+data = {name_MEP: [{"source" : titres[i].text, "contenu": contenu[i].text, "source_date": dates[i].text} for i in range(len(titres))]}
 
 #save the data
-with open(f"../data/{name_MEP}.json", "w", encoding='utf-8') as f:
-    json.dump(data, f, ensure_ascii=False)
+pd.DataFrame(data[name_MEP]).to_csv(f"../data/{name_MEP}.csv", index=False)
