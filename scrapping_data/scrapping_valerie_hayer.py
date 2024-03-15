@@ -16,7 +16,7 @@ page_to_scrap = f"https://www.europarl.europa.eu/meps/fr/{num_MEP}/{name_MEP}/ot
 
 
 
-driver = webdriver.Firefox()
+driver = webdriver.Chrome()
 driver.get(page_to_scrap)
 time.sleep(2)
 
