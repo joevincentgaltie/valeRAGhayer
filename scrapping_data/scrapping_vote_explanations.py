@@ -7,6 +7,7 @@ import time
 import pandas as pd
 import json
 import numpy as np
+import os
 
 from tqdm import tqdm
 
@@ -63,12 +64,29 @@ for index, row in tqdm(list_to_iter_on.iterrows()) :
 
     # all 10 index , save the data
     if i % 3 == 0:
-        pd.DataFrame.from_dict(data).T.explode(column=["source", "contenu", "source_date"]).to_csv(f"../data/all_french_explanations_{index}.csv")
+        pd.DataFrame.from_dict(data).T.explode(column=["source", "contenu", "source_date"]).to_csv(f"../data/vote_explanations/all_french_explanations_{index}.csv")
         data={}
     #pd.DataFrame.from_dict(data).T.explode(column=["source", "contenu", "source_date"]).to_csv("../data/all_french_explanations.csv")
 
 #merge all files that begins with all_french_explanations 
 
+
+directory = '../data/vote_explanations'
+
+to_concat=[]
+for filename in os.listdir(directory):
+    # Vérifie si le fichier correspond au modèle d'expression régulière
+    tmp = pd.read_csv(os.path.join(directory, filename))
+    to_concat.append(tmp)
+all_french_explanations = pd.concat(to_concat, axis=0)
+all_french_explanations.rename(columns= {'Unnamed: 0' : 'name'}, inplace=True)
+
+more_info_on_meps= pd.read_csv('../data/liste_meps.csv')
+more_info_on_meps.rename(columns= {'Unnamed: 0' : 'name'}, inplace=True)
+
+more_info_on_meps.name = more_info_on_meps.name.str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+
+pd.merge(all_french_explanations, more_info_on_meps[['name','party', 'orientation', 'number']], on ='name', how='left').to_csv('../data/all_french_explanations.csv')
 
 
 
