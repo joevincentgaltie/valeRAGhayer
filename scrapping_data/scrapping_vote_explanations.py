@@ -28,7 +28,9 @@ list_to_iter_on.name = list_to_iter_on.name.str.normalize('NFKD').str.encode('as
 driver = webdriver.Firefox()
 
 data={}
+i = 0
 for index, row in tqdm(list_to_iter_on.iterrows()) : 
+    i +=1
     page_to_scrap = f"https://www.europarl.europa.eu/meps/fr/{row['number']}/{row['name']}/other-activities/written-explanations#detailedcardmep"
     driver.get(page_to_scrap)
     time.sleep(np.random.uniform(2,3))
@@ -60,11 +62,12 @@ for index, row in tqdm(list_to_iter_on.iterrows()) :
     time.sleep(np.random.uniform(2,3))
 
     # all 10 index , save the data
-    if index % 3 == 0:
+    if i % 3 == 0:
         pd.DataFrame.from_dict(data).T.explode(column=["source", "contenu", "source_date"]).to_csv(f"../data/all_french_explanations_{index}.csv")
         data={}
     #pd.DataFrame.from_dict(data).T.explode(column=["source", "contenu", "source_date"]).to_csv("../data/all_french_explanations.csv")
 
+#merge all files that begins with all_french_explanations 
 
 
 
