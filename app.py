@@ -1,3 +1,8 @@
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
+
 import streamlit as st
 from langchain_chroma import Chroma
 from langchain_mistralai.chat_models import ChatMistralAI
@@ -6,9 +11,23 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import create_retrieval_chain
 
+
 from dotenv import load_dotenv
 import os 
+load_dotenv()
+api_key = os.getenv("API_MISTRAL")
+
 from rag.utils import mapper_partis
+
+from st_files_connection import FilesConnection
+
+# Create connection object and retrieve file contents.
+# Specify input format is a csv and to cache the result for 600 seconds.
+conn = st.connection('s3', type=FilesConnection)
+df = conn.read("testbucket-jrieke/myfile.csv", input_format="csv", ttl=600)
+
+
+
 load_dotenv()
 api_key = os.getenv("API_MISTRAL")
 
