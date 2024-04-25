@@ -53,7 +53,7 @@ model = ChatMistralAI(mistral_api_key=api_key,
 
 
 
-db = Chroma(persist_directory="rag/chroma_db", embedding_function=embeddings)
+db = Chroma(persist_directory="chroma_db", embedding_function=embeddings)
 
 
 
