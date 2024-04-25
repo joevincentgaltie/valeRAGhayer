@@ -28,8 +28,9 @@ from rag.utils import mapper_partis
 
 
 
-load_dotenv()
-api_key = os.getenv("API_MISTRAL")
+#load_dotenv()
+api_key = st.secrets["API_MISTRAL"]
+#os.getenv("API_MISTRAL")
 
 
 streamlit_style = """
