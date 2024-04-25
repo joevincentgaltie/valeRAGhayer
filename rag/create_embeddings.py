@@ -1,9 +1,13 @@
 from langchain.document_loaders import CSVLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_mistralai.embeddings import MistralAIEmbeddings
+from langchain_chroma import Chroma
 #import faiss
 
-from langchain.vectorstores import FAISS
+from dotenv import load_dotenv
+import os 
+load_dotenv()
+API_MISTRAL = os.getenv("API_MISTRAL")
 
 
 loader = CSVLoader('../data/all_french_explanations.csv',metadata_columns=["party", "number","name", "source", "source_date","orientation"], encoding="utf-8")
@@ -16,9 +20,7 @@ documents = [doc for doc in documents if doc.metadata["party"] == "Groupe Renew 
 splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
 chunked_docs = splitter.split_documents(documents)
 
-embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
-
-db = FAISS.from_documents(chunked_docs, embedding_function)
-db.save_local("../data/faiss_index_groupe_renew_europe")
+embeddings = MistralAIEmbeddings(model="mistral-embed", mistral_api_key=API_MISTRAL)
+db = Chroma.from_documents(documents, embeddings, persist_directory="../chroma_db", collection_name="Explanations")
 
 
