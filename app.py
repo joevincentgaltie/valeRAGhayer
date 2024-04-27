@@ -77,7 +77,7 @@ model = ChatMistralAI(mistral_api_key=api_key,
 @st.cache_resource 
 def load_data() : 
     with st.spinner(text="Chargement de la base de données, patience !"):
-        loader = CSVLoader('data/all_french_explanations.csv',metadata_columns=["party", "number","name", "source", "source_date","orientation"], encoding="utf-8")
+        loader = CSVLoader('db/all_french_explanations.csv',metadata_columns=["party", "number","name", "source", "source_date","orientation"], encoding="utf-8")
         documents =loader.load()
         db = Chroma.from_documents(documents, embeddings, persist_directory="../chroma_db")
         return db
