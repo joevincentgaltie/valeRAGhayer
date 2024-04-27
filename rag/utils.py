@@ -8,3 +8,14 @@ mapper_partis = {'Groupe Renew Europe (Renaissance, MoDem, Parti radical, Horizo
  }
 
 #'Non-inscrits (Non-inscrits) ': 'Non-inscrits'
+
+
+assistant_mapper_party = {'Groupe Renew Europe' : "ValeRAG Hayer",
+  "Groupe de l'Alliance Progressiste des Socialistes et Démocrates au Parlement européen" : 'Glucksllman',
+ 'Groupe des Conservateurs et Réformistes européens' : "NicolAI Bay",
+ 'Groupe des Verts/Alliance libre européenne' : 'Marie ToussAInt',
+  'Groupe du Parti populaire européen (Démocrates-Chrétiens)' : 'Nadine Moranocode', 
+  'Groupe «Identité et démocratie»' : 'Jordan BardeLLAMA', 
+  'Le groupe de la gauche au Parlement européen - GUE/NGL' : 'Manon AubRAG',
+ }
+
