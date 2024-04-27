@@ -3,8 +3,6 @@ import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 from dotenv import load_dotenv
 load_dotenv()
-api_key = st.secret("API_MISTRAL")
-
 import streamlit as st
 from langchain.document_loaders import CSVLoader
 from langchain_mistralai.chat_models import ChatMistralAI
