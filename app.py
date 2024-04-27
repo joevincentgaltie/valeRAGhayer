@@ -1,23 +1,16 @@
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
-
 import streamlit as st
-from langchain_chroma import Chroma
 from langchain_mistralai.chat_models import ChatMistralAI
 from langchain_mistralai.embeddings import MistralAIEmbeddings
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import create_retrieval_chain
-
-
+from langchain_chroma import Chroma
+import os
 from dotenv import load_dotenv
-import os 
 load_dotenv()
 api_key = os.getenv("API_MISTRAL")
 
-from rag.utils import mapper_partis
+from rag.utils import mapper_partis, assistant_mapper_party
 
 #from st_files_connection import FilesConnection
 
@@ -29,8 +22,8 @@ from rag.utils import mapper_partis
 
 
 #load_dotenv()
-api_key = st.secrets["API_MISTRAL"]
-st.write(api_key)
+#api_key = st.secrets["API_MISTRAL"]
+
 #os.getenv("API_MISTRAL")
 
 
@@ -58,7 +51,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 st.markdown('<p class="big-font"> DemocracIA </p>', unsafe_allow_html=True)
-st.markdown('<p class="medium-font"> Interrogeons les actes 👀  </p>', unsafe_allow_html=True)
+st.markdown('<p class="medium-font"> Nous votons, eux aussi 👀  </p>', unsafe_allow_html=True)
 
 
 
@@ -125,17 +118,19 @@ retrieval_chain = create_retrieval_chain(retriever, document_chain)
 #     st.write("")
 #     st.write(f"{response['answer']}")
 
-messages = st.container(height=500)
+messages = st.container()
 if user_query := st.chat_input("Pose moi une question sur les activités du parti au Parlement"):
     response = retrieval_chain.invoke({'input': user_query, 'party' : party})
     messages.chat_message("user").write(user_query)
 
+    assistant = assistant_mapper_party[party]
+
     if len(response["context"])> 0 : 
-        messages.chat_message("assistant").write(f"Valerag : {response['answer']}")
+        messages.chat_message("assistant").write(f"{assistant} : {response['answer']}")
         with messages.chat_message("Jammy", avatar = '🔎') : 
             st.write(f"Jamy : Pour répondre, Valerag a utilisé les explications de vote suivantes ")
             for doc in response["context"] : 
-                st.write(f"Explication de vote  de {doc.metadata['name']} sur le sujet : { doc.metadata['source']}")
+                st.write(f"Explication de vote  de {doc.metadata['name']} ({doc.metadata['orientation']}) sur le sujet : { doc.metadata['source'][:-10]}")
                 with st.expander("Voir l'explication") : 
                     st.write(doc.page_content[2:])
 
