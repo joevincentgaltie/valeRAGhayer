@@ -1,4 +1,5 @@
 import streamlit as st
+from langchain.document_loaders import CSVLoader
 from langchain_mistralai.chat_models import ChatMistralAI
 from langchain_mistralai.embeddings import MistralAIEmbeddings
 from langchain.chains.combine_documents import create_stuff_documents_chain
@@ -66,8 +67,21 @@ model = ChatMistralAI(mistral_api_key=api_key,
                       safe_prompt = True)
 
 
+@st.cache_resource 
+def load_data() : 
+    with st.spinner(text="Chargement de la base de données, patience !"):
+        loader = CSVLoader('data/all_french_explanations.csv',metadata_columns=["party", "number","name", "source", "source_date","orientation"], encoding="utf-8")
+        documents =loader.load()
+        db = Chroma.from_documents(documents, embeddings, persist_directory="../chroma_db")
+        return db
 
-db = Chroma(persist_directory="chroma_db", embedding_function=embeddings)
+db = load_data()
+
+
+
+
+
+#db = Chroma(persist_directory="chroma_db", embedding_function=embeddings)
 
 
 
