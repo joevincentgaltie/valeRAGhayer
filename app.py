@@ -79,7 +79,7 @@ def load_data() :
     with st.spinner(text="Chargement de la base de données, patience !"):
         loader = CSVLoader('db/all_french_explanations.csv',metadata_columns=["party", "number","name", "source", "source_date","orientation"], encoding="utf-8")
         documents =loader.load()
-        db = Chroma.from_documents(documents[:100], embeddings, persist_directory="../chroma_db")
+        db = Chroma.from_documents(documents[:10000], embeddings, persist_directory="../chroma_db")
         return db
 
 db = load_data()
