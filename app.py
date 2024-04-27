@@ -1,6 +1,7 @@
 __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+import chromadb
 from dotenv import load_dotenv
 load_dotenv()
 import streamlit as st
@@ -11,8 +12,6 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import create_retrieval_chain
 from langchain_chroma import Chroma
-import chromadb
-import chromadb.config
 import os
 
 
