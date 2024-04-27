@@ -1,7 +1,9 @@
 __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
+from dotenv import load_dotenv
+load_dotenv()
+api_key = st.secret("API_MISTRAL")
 
 import streamlit as st
 from langchain.document_loaders import CSVLoader
@@ -12,9 +14,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import create_retrieval_chain
 from langchain_chroma import Chroma
 import os
-from dotenv import load_dotenv
-load_dotenv()
-api_key = os.getenv("API_MISTRAL")
+
 
 from rag.utils import mapper_partis, assistant_mapper_party
 
@@ -29,7 +29,9 @@ from rag.utils import mapper_partis, assistant_mapper_party
 
 #load_dotenv()
 api_key = st.secrets["API_MISTRAL"]
-st.write(api_key)
+hugging_face_token = st.secrets["HUGGING_FACE"]
+from huggingface_hub import login
+login(token=hugging_face_token)
 
 #os.getenv("API_MISTRAL")
 
