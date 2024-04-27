@@ -28,7 +28,7 @@ from rag.utils import mapper_partis, assistant_mapper_party
 
 
 #load_dotenv()
-#api_key = st.secrets["API_MISTRAL"]
+api_key = st.secrets["API_MISTRAL"]
 
 #os.getenv("API_MISTRAL")
 
