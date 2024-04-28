@@ -88,7 +88,7 @@ model = ChatMistralAI(mistral_api_key=api_key,
                       safe_prompt = True)
 
 
-@st.cache_data 
+
 db = Qdrant(
     client=client, 
     collection_name="my_documents", 
