@@ -22,8 +22,7 @@ import os
 
 from rag.utils import mapper_partis, assistant_mapper_party, get_response, stream_str
 
-st.set_page_config(page_title="Democracia", 
-                   layout = "wide")
+st.set_page_config(page_title="Democracia")
 
 
 #Setting tokens
