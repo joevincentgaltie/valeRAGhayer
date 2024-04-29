@@ -3,7 +3,6 @@
 # sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 #import chromadb
 
-
 import streamlit as st
 from dotenv import load_dotenv
 load_dotenv()
@@ -21,24 +20,18 @@ from langchain_community.vectorstores import Qdrant
 import os
 
 
-from rag.utils import mapper_partis, assistant_mapper_party
-
-#from st_files_connection import FilesConnection
-
-# Create connection object and retrieve file contents.
-# Specify input format is a csv and to cache the result for 600 seconds.
-# conn = st.connection('s3', type=FilesConnection)
-# df = conn.read("testbucket-jrieke/myfile.csv", input_format="csv", ttl=600)
+from rag.utils import mapper_partis, assistant_mapper_party, get_response, stream_str
 
 
 
-#load_dotenv()
+
+#Setting tokens
 api_key = st.secrets["API_MISTRAL"]
-#hugging_face_token = st.secrets["HUGGING_FACE"]
+hugging_face_token = st.secrets["HUGGING_FACE"]
 api_qdrant = st.secrets["API_QDRANT"]
 url_qdrant = st.secrets["URL_CLUSTER_QDRANT"]
-# from huggingface_hub import login
-# login(token=hugging_face_token)
+from huggingface_hub import login
+login(token=hugging_face_token)
 
 
 client = qdrant_client.QdrantClient(
@@ -46,9 +39,9 @@ client = qdrant_client.QdrantClient(
     api_key=api_qdrant, # For Qdrant Cloud, None for local instance
 )
 
-#os.getenv("API_MISTRAL")
 
 
+#Setting style of streamlit page 
 streamlit_style = """
 			<style>
 			html, body, [class*="css"]  {
@@ -88,8 +81,8 @@ st.markdown("""
         """, unsafe_allow_html=True)
 
 
-# Afficher le titre avec la police personnalisée
-#st.title('ValeRAG Hayer')
+
+#Tools for the rag
 
 embeddings = MistralAIEmbeddings(model="mistral-embed", mistral_api_key=api_key)
 model = ChatMistralAI(mistral_api_key=api_key,
@@ -98,44 +91,18 @@ model = ChatMistralAI(mistral_api_key=api_key,
                       safe_prompt = True)
 
 
-
+#Loading vector db from qdrant
 db = Qdrant(
     client=client, 
     collection_name="my_documents", 
     embeddings=embeddings)
-
-#def load_data() : 
-    # with st.spinner(text="Chargement de la base de données, patience !"):
-    #     loader = CSVLoader('db/all_french_explanations.csv',metadata_columns=["party", "number","name", "source", "source_date","orientation"], encoding="utf-8")
-    #     documents =loader.load()
-    #     db = Chroma.from_documents(documents[:20000], embeddings, persist_directory="../chroma_db")
-    #     return db
-
-
-#db = load_data()
-
-
-
-
-
-#db = Chroma(persist_directory="chroma_db", embedding_function=embeddings)
 
 
 
 
 st.warning('Version demo : nous ne saurions être tenus responsables si votre député(e) préféré(e) est diffamé(e)', icon="⚠️")
 
-#party = mapper_partis[st.selectbox(label = "Parti politique" , options=mapper_partis.keys())]
-
-
-# prompt = ChatPromptTemplate.from_template("""Resume only in french language the political position of the MPs of the party {party} on the following subject based only on the provided context:
-
-# <context>
-# {context}
-# </context>
-
-# Question: {input}""")
-
+#Prompt for common use
 prompt = ChatPromptTemplate.from_template("""Résume, en français uniquement, la position des députés européens du parti {party} sur le sujet ou la question suivante, en utilisant uniquement le contexte suivant :
 
 <context>
@@ -145,6 +112,7 @@ prompt = ChatPromptTemplate.from_template("""Résume, en français uniquement, l
                                                                            
 Question: {input}""")
 
+#Prompt if no context can be retrieved
 def prompt_no_context(party : str, input : str) -> str : 
 
     return f"Essaie de répondre en français uniquement à la question suivante en précisant bien que tu n'as pas identifié de réponse à cette question parmi les explications de vote des députés européens de ce parti  {party}. Question: {input}"
@@ -153,17 +121,6 @@ def prompt_no_context(party : str, input : str) -> str :
 
 
 
-
-
-# user_query 
-# user_query = st.chat_input("Pose moi une question sur les activités du parti au Parlement")
-
-
-# if user_query :
-#     response = retrieval_chain.invoke({'input': user_query, 'party' : party})
-#     st.write(f"Votre sujet : {user_query}")
-#     st.write("")
-#     st.write(f"{response['answer']}")
 
 
 #messages = st.container(height=500)
@@ -182,23 +139,22 @@ with st.chat_message("assistant"):
 
 if user_query := st.chat_input("Pose moi une question sur les activités du parti au Parlement"):
     
-    response = retrieval_chain.invoke({'input': user_query, 'party' : party})
+    #response = retrieval_chain.stream({'input': user_query, 'party' : party})
     st.chat_message("user").write(user_query)
-
+    context = retriever.invoke(user_query)
     
-
-    if len(response["context"])> 0 : 
+    if len(context)> 0 :
         with st.chat_message("assistant") : 
-            st.write(f"{'MarIAnne'} : {response['answer']}")
+            st.write_stream(get_response(retrieval_chain, user_input=user_query, party = party))
         with st.chat_message("Jammy", avatar = '🔎') : 
-            st.write(f"Jamy : Pour répondre, Valerag a utilisé les explications de vote suivantes ")
-            for doc in response["context"] : 
-                st.write(f"Explication de vote  de {doc.metadata['name']} ({doc.metadata['orientation']}) sur le sujet : { doc.metadata['source'][:-10]}")
+            st.write_stream(stream_str("Jamy : Pour répondre, Valerag a utilisé les explications de vote suivantes "))
+            for doc in context : 
+                st.write_stream(stream_str(f"Explication de vote  de {doc.metadata['name']} ({doc.metadata['orientation']}) sur le sujet : { doc.metadata['source'][:-10]}"))
                 with st.expander("Voir l'explication") : 
                     st.write(doc.page_content[2:])
 
-    if len(response["context"])==0 : 
-        st.chat_message("assistant").write(f"MarIAnne : {model.invoke(input = prompt_no_context(input= user_query, party = party)).content}")
+    if len(context)==0 : 
+        st.chat_message("assistant").write_stream(f"MarIAnne : {model.invoke(input = prompt_no_context(input= user_query, party = party)).content}")
 
 
 
@@ -220,4 +176,4 @@ if user_query := st.chat_input("Pose moi une question sur les activités du part
 # if prompt := st.chat_input(disabled=not (hf_email and hf_pass)):
 #     st.session_state.st.append({"role": "user", "content": prompt})
 #     with st.chat_message("user"):
-#         st.write(prompt)
+#     st.write(prompt)
