@@ -130,7 +130,7 @@ with st.chat_message("assistant"):
     party = mapper_partis[st.selectbox(label = "Quel est le groupe politique dont tu souhaites connaître les positions prises ? " , options=mapper_partis.keys())]
 
     retriever = db.as_retriever(
-    search_type="similarity_score_threshold", search_kwargs={"score_threshold": 0.6, 'filter' :  {"party": party}}
+    search_type="similarity_score_threshold", search_kwargs={"score_threshold": 0.6, 'k':10,'filter' :  {"party": party}}
     )
 
     document_chain = create_stuff_documents_chain(model, prompt)
@@ -147,7 +147,7 @@ if user_query := st.chat_input("Pose moi une question sur les activités du part
         with st.chat_message("assistant") : 
             st.write_stream(get_response(retrieval_chain, user_input=user_query, party = party))
         with st.chat_message("Jammy", avatar = '🔎') : 
-            st.write_stream(stream_str("Jamy : Pour répondre, Valerag a utilisé les explications de vote suivantes "))
+            st.write_stream(stream_str("Jamy : Pour répondre, marIAnne s'est appuyée sur les explications de vote suivantes en pensant qu'elles pouvaient apporter du contexte utile "))
             for doc in context : 
                 st.write_stream(stream_str(f"Explication de vote  de {doc.metadata['name']} ({doc.metadata['orientation']}) sur le sujet : { doc.metadata['source'][:-10]}"))
                 with st.expander("Voir l'explication") : 
