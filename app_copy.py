@@ -22,7 +22,8 @@ import os
 
 from rag.utils import mapper_partis, assistant_mapper_party, get_response, stream_str
 
-
+st.set_page_config(page_title="Democracia", 
+                   layout = "wide")
 
 
 #Setting tokens
@@ -146,7 +147,7 @@ if user_query := st.chat_input("Pose moi une question sur les activités du part
     if len(context)> 0 :
         with st.chat_message("assistant") : 
             st.write_stream(get_response(retrieval_chain, user_input=user_query, party = party))
-        with st.chat_message("Jammy", avatar = '🔎') : 
+        with st.chat_message("Jamy", avatar = '🔎') : 
             st.write_stream(stream_str("Jamy : Pour répondre, marIAnne s'est appuyée sur les explications de vote suivantes en pensant qu'elles pouvaient apporter du contexte utile "))
             for doc in context : 
                 st.write_stream(stream_str(f"Explication de vote  de {doc.metadata['name']} ({doc.metadata['orientation']}) sur le sujet : { doc.metadata['source'][:-10]}"))
