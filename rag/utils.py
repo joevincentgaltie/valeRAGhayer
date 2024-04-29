@@ -19,3 +19,40 @@ assistant_mapper_party = {'Groupe Renew Europe' : "ValeRAG Hayer",
   'Le groupe de la gauche au Parlement européen - GUE/NGL' : 'Manon AubRAG',
  }
 
+
+def get_response(retrieval_chain ,  user_input: str, party : str):
+    """get_response 
+
+    Args:
+        retrieval_chain (_type_): _description_
+        user_input (str): _description_
+
+    Yields:
+        _type_: _description_
+    """
+    response_stream= retrieval_chain.stream(
+        {'input': user_input, 'party' : party}
+    ) 
+    for chunk in response_stream:
+        content=chunk.get("answer","")
+        yield content
+
+def stream_str(sequence :str) : 
+    for word in sequence.split(" ") :
+        yield word + " "
+
+
+def generate_response_by_groups(user_query, partis, retrieval_chain, retriever) : 
+    
+    summaries = {}
+    for parti in partis : 
+        result  = get_response(retrieval_chain, user_query)
+        context = retriever.invoke(user_query)
+
+        if context != [] : 
+            summaries[parti] = {"result" : result,
+                                "context" : context}
+
+    return summaries 
+            
+
