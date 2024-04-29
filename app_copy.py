@@ -55,12 +55,12 @@ st.markdown(streamlit_style, unsafe_allow_html=True)
 st.markdown("""
 <style>
 .big-font {
-    font-size:50px !important;
+    font-size:40px !important;
     font-family:Impact;
 }
             
 .medium-font {
-    font-size:30px ;
+    font-size:20px ;
     font-family:Impact;
 }
 </style>
