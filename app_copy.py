@@ -127,9 +127,11 @@ def prompt_no_context(party : str, input : str) -> str :
 
 
 #emoji bigger
-st.markdown(" 🤖 Bonjour ! Je suis marIAnne, l'IA tellement passionnée par la politique européenne qu'elle a appris toutes les explications de vote et prises de position en débat lors des séances plénières du Parlement Européen. Pour que je puisse te renseigner, choisis un groupe politique qui t'intéresse. Saisis une question ou un sujet, et je te donnerai les positions prises par les députés européens français de ce groupe au Parlement Européen depuis 2019.", unsafe_allow_html=True)
+if "begin" not in st.session_state.keys():
+    st.session_state.begin = True
+    st.markdown(" 🤖 Bonjour ! Je suis marIAnne, l'IA tellement passionnée par la politique européenne qu'elle a appris toutes les explications de vote et prises de position en débat lors des séances plénières du Parlement Européen. Pour que je puisse te renseigner, choisis un groupe politique qui t'intéresse. Saisis une question ou un sujet, et je te donnerai les positions prises par les députés européens français de ce groupe au Parlement Européen depuis 2019.", unsafe_allow_html=True)
 
-party = mapper_partis[st.selectbox(label = "Quel est le groupe politique dont tu souhaites connaître les positions prises ? " , options=mapper_partis.keys())]
+party = mapper_partis[st.selectbox(label = "🤖  Quel est le groupe politique dont tu souhaites connaître les positions prises ? " , options=mapper_partis.keys())]
 
 #messages = st.container(height=500)
 
@@ -142,7 +144,7 @@ retrieval_chain = create_retrieval_chain(retriever, document_chain)
 
 
 if user_query := st.chat_input("Pose moi une question sur les activités du parti au Parlement"):
-    with st.container(border=True, width=800) as container :
+    with st.container(border=True) as container :
     #response = retrieval_chain.stream({'input': user_query, 'party' : party})
         st.chat_message("user").write(user_query)
         #st.session_state.messages.append({"role": "user", "content": user_query})
