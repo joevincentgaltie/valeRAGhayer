@@ -76,9 +76,10 @@ st.markdown("""
         font-family:Impact;
     }
 
-    .big-font {.big-font {
-        font-size:40px !important;
-        font-family:Impact;
+            
+    .explanation {
+        font-size:12px;
+        font-weight: italic;
     }
 
     .medium-font {
@@ -181,13 +182,15 @@ if user_query := st.chat_input("Pose moi une question sur les positions du group
                 st.write_stream(response)
                 #st.session_state.messages.append({"role": "assistant", "content": response})
 
-        
-            with st.chat_message("Jamy", avatar = '🔎') : 
-                st.write_stream(stream_str("Jamy : Pour répondre, marIAnne s'est appuyée sur les explications de vote suivantes en pensant qu'elles pouvaient apporter du contexte utile "))
-                for doc in context : 
-                    st.write_stream(stream_str(f"{doc.metadata['Type']}  de {mapper_noms[doc.metadata['name']]} ({doc.metadata['orientation']}) sur le sujet : {doc.metadata['source']}"))
-                    with st.expander("Voir l'explication") : 
-                        st.write(doc.page_content[2:])
+            with st.expander("Voir les textes sur lesquels je me suis appuyée") :
+                with st.chat_message("Assistant", avatar = '🔎') : 
+                    st.write_stream(stream_str("Pour répondre, democracIA s'est appuyée sur les explications de vote suivantes en pensant qu'elles pouvaient apporter du contexte utile "))
+                    for doc in context : 
+                        st.write_stream(stream_str(f"{doc.metadata['Type']}  de {mapper_noms[doc.metadata['name']]} ({doc.metadata['orientation']}) sur le sujet : {doc.metadata['source']}"))
+                        #write in small in italic
+                        st.markdown("")
+                        st.markdown(f'<p class="explanation"> {doc.page_content[2:]} </p>', unsafe_allow_html=True)
+                        st.markdown("")
 
 
 
