@@ -142,7 +142,7 @@ retrieval_chain = create_retrieval_chain(retriever, document_chain)
 
 
 if user_query := st.chat_input("Pose moi une question sur les activités du parti au Parlement"):
-    with st.container(border=True) :
+    with st.container(border=True, width=800) as container :
     #response = retrieval_chain.stream({'input': user_query, 'party' : party})
         st.chat_message("user").write(user_query)
         #st.session_state.messages.append({"role": "user", "content": user_query})
