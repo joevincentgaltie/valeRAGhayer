@@ -4,10 +4,13 @@
 #import chromadb
 
 import streamlit as st
+
+st.page_config(layout="wide")
 import pandas as pd 
 from dotenv import load_dotenv
 load_dotenv()
 import qdrant_client
+
 
 from langchain.document_loaders import CSVLoader
 from langchain_mistralai.chat_models import ChatMistralAI
@@ -23,7 +26,7 @@ import os
 
 from rag.utils import mapper_partis, assistant_mapper_party, get_response, stream_str
 
-st.set_page_config(page_title="Democracia", page_icon="🇪🇺", layout="wide", menu_items={"About" : "DemocracIA est une demonstration d'utilisation des larges modèles de langage pour une meilleure information du citoyen. Pour en discuter, signaler des problèmes ou améliorations possibles, merci de nous contacter à l'adresse suivante : joevincentgaltie@gmail.com"})
+st.set_page_config(page_title="Democracia", page_icon="🇪🇺", layout="wide" , menu_items={"About" : "DemocracIA est une demonstration d'utilisation des larges modèles de langage pour une meilleure information du citoyen. Pour en discuter, signaler des problèmes ou améliorations possibles, merci de nous contacter à l'adresse suivante : joevincentgaltie@gmail.com"})
 
 
 
