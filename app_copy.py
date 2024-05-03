@@ -23,7 +23,7 @@ import os
 
 from rag.utils import mapper_partis, assistant_mapper_party, get_response, stream_str
 
-st.set_page_config(page_title="Democracia", page_icon="🇪🇺", layout="wide")
+st.set_page_config(page_title="Democracia", page_icon="🇪🇺", layout="wide", menu_items={"About" : "DemocracIA est une demonstration d'utilisation des larges modèles de langage pour une meilleure information du citoyen. Pour en discuter, signaler des problèmes ou améliorations possibles, merci de nous contacter à l'adresse suivante : joevincentgaltie@gmail.com"})
 
 
 
@@ -49,44 +49,69 @@ client = qdrant_client.QdrantClient(
 
 
 
-#Setting style of streamlit page 
-streamlit_style = """
-			<style>
-			html, body, [class*="css"]  {
-			font-family: 'Impact', sans-serif;
-			}
-			</style>
-			"""
-st.markdown(streamlit_style, unsafe_allow_html=True)
+# #Setting style of streamlit page 
+# streamlit_style = """
+# 			<style>
+# 			html, body, [class*="css"]  {
+# 			font-family: 'Impact', sans-serif;
+# 			}
+# 			</style>
+# 			"""
+# st.markdown(streamlit_style, unsafe_allow_html=True)
 
 
 st.markdown("""
 <style>
-.big-font {
-    font-size:40px !important;
-    font-family:Impact;
-}
             
-.medium-font {
+    html, body, [class*="css"]  {
+    font-family: 'Impact', sans-serif;
+    }
+    .big-font {
+        font-size:40px !important;
+        font-family:Impact;
+    }
+            
+    .medium-font {
+        font-size:20px ;
+        font-family:Impact;
+    }
+
+    .big-font {.big-font {
+        font-size:40px !important;
+        font-family:Impact;
+    }
+
+    .medium-font {
     font-size:20px ;
     font-family:Impact;
-}
+    }
+
+    .stChatMessage {
+        padding=0px;
+        margin=0px;
+    }
+            
+    st.Select {
+        font-family: 'Impact', sans-serif;
+        font-size: 20px;
+    }
+
+
+    .block-container {
+        padding-top: 1rem;
+        padding-bottom: 0rem;
+        padding-left: 5rem;
+        padding-right: 5rem;
+    }
 </style>
-""", unsafe_allow_html=True)
+            """
+    , unsafe_allow_html=True)
+
+
 st.markdown('<p class="big-font"> DemocracIA </p>', unsafe_allow_html=True)
 st.markdown('<p class="medium-font"> Nous votons, eux aussi 👀  </p>', unsafe_allow_html=True)
 
-# Remove whitespace from the top of the page and sidebar
-st.markdown("""
-        <style>
-               .block-container {
-                    padding-top: 1rem;
-                    padding-bottom: 0rem;
-                    padding-left: 5rem;
-                    padding-right: 5rem;
-                }
-        </style>
-        """, unsafe_allow_html=True)
+
 
 
 
@@ -129,7 +154,7 @@ def prompt_no_context(party : str, input : str) -> str :
 #emoji bigger
 if "begin" not in st.session_state.keys():
     st.session_state.begin = True
-    st.markdown(" 🤖 Bonjour ! Je suis marIAnne, l'IA tellement passionnée par la politique européenne qu'elle a appris toutes les explications de vote et prises de position en débat lors des séances plénières du Parlement Européen. Pour que je puisse te renseigner, choisis un groupe politique qui t'intéresse. Saisis une question ou un sujet, et je te donnerai les positions prises par les députés européens français de ce groupe au Parlement Européen depuis 2019.", unsafe_allow_html=True)
+    st.write_stream(stream_str("Bonjour ! Je suis democracIA, l'IA qui a appris toutes les explications de vote et prises de position des députés français au Parlement Européen. Pour que je puisse te renseigner, choisis un groupe politique qui t'intéresse et pose moi une question !"))
 
 party = mapper_partis[st.selectbox(label = "🤖  Quel est le groupe politique dont tu souhaites connaître les positions prises ? " , options=mapper_partis.keys())]
 
@@ -143,7 +168,7 @@ document_chain = create_stuff_documents_chain(model, prompt)
 retrieval_chain = create_retrieval_chain(retriever, document_chain)
 
 
-if user_query := st.chat_input("Pose moi une question sur les activités du parti au Parlement"):
+if user_query := st.chat_input("Pose moi une question sur les positions du groupe"):
     with st.container(border=True) as container :
     #response = retrieval_chain.stream({'input': user_query, 'party' : party})
         st.chat_message("user").write(user_query)
@@ -169,7 +194,7 @@ if user_query := st.chat_input("Pose moi une question sur les activités du part
 
             
         if len(context)==0 : 
-            st.chat_message("assistant").write_stream(stream_str(f"{model.invoke(input = prompt_no_context(input= user_query, party = party)).content})"))
+            st.chat_message("assistant").write_stream(stream_str(f"{model.invoke(input = prompt_no_context(input= user_query, party = party)).content}"))
             #st.session_state.messages.append({"role": "assistant", "content": model.invoke(input = prompt_no_context(input= user_query, party = party)).content})
 
 
