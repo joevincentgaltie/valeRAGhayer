@@ -192,7 +192,7 @@ if user_query := st.chat_input("Pose moi une question sur les positions du group
                         st.write_stream(stream_str(f"{doc.metadata['Type']}  de {mapper_noms[doc.metadata['name']]} ({doc.metadata['orientation']}) sur le sujet : {doc.metadata['source']}"))
                         #write in small in italic
                         st.markdown("")
-                        st.markdown(f"<p class='explanation'> {doc.page_content[2:]} </p>", unsafe_allow_html=True)
+                        st.markdown(f"<p class='explanation'> {doc.page_content[2:].replace('/n', '')} </p>", unsafe_allow_html=True)
                         st.markdown("")
 
 
