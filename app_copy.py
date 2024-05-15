@@ -160,7 +160,7 @@ if "begin" not in st.session_state.keys():
     st.session_state.begin = True
     st.write_stream(stream_str("Bonjour ! Je suis democracIA, l'IA qui a appris toutes les explications de vote et prises de position des députés français au Parlement Européen. Pour que je puisse te renseigner, choisis un groupe politique qui t'intéresse et pose moi une question !"))
 
-party = mapper_partis[st.selectbox(label = "🤖  Quel est le groupe politique dont tu souhaites connaître les positions prises ? " , options=mapper_partis.keys().sort())]
+party = mapper_partis[st.selectbox(label = "🤖  Quel est le groupe politique dont tu souhaites connaître les positions prises ? " , options=sorted(mapper_partis.keys()))]
 
 #messages = st.container(height=500)
 
