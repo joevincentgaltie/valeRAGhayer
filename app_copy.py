@@ -5,7 +5,7 @@
 
 import streamlit as st
 
-st.set_page_config(layout="wide")
+st.page_config(layout="wide")
 import pandas as pd 
 from dotenv import load_dotenv
 load_dotenv()
