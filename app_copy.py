@@ -137,7 +137,7 @@ db = Qdrant(
 
 
 
-st.warning('Version demo : certaines réponses peuvent être inexactes', icon="⚠️")
+st.warning('Certaines réponses peuvent être inexactes', icon="⚠️")
 
 #Prompt for common use
 prompt = ChatPromptTemplate.from_template("""Résume, en français uniquement, la position des députés européens du parti {party} sur le sujet ou la question suivante, en utilisant uniquement le contexte suivant :
