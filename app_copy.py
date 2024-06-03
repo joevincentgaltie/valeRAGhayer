@@ -113,7 +113,7 @@ st.markdown("""
 
 
 st.markdown('<p class="big-font"> DemocracIA </p>', unsafe_allow_html=True)
-st.markdown('<p class="medium-font"> Nous votons, eux aussi 👀  </p>', unsafe_allow_html=True)
+st.markdown('<p class="medium-font"> Nous votons, nos députés aussi 👀  </p>', unsafe_allow_html=True)
 
 
 
