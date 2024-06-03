@@ -12,7 +12,7 @@ load_dotenv()
 import qdrant_client
 
 
-from langchain.document_loaders import CSVLoader
+from langchain.document_loaders import CSVLoader 
 from langchain_mistralai.chat_models import ChatMistralAI
 from langchain_mistralai.embeddings import MistralAIEmbeddings
 from langchain.chains.combine_documents import create_stuff_documents_chain
